@@ -24,7 +24,7 @@ AutomaticGamepad
 3. 运行AutomaticGamepad.exe
 4. 选择你要运行的脚本，点击绑定窗口，绑定成功后，设置运行次数，最后点击启动即可
 
-<img src=".\Images\image-20220320234149677.png" alt="image-20220320234149677" style="zoom: 33%;" />
+<img src=".\Images\image-20220320234149677.png" alt="image-20220320234149677" style="zoom: 25%;" />
 
 ---
 
@@ -34,7 +34,7 @@ AutomaticGamepad
 
 1. 脚本语言是JavaScript
 2. 脚本文件后缀为 .ag
-3. 将脚本文件放置在该软件
+3. 将脚本文件放置在与该软件同级的目录下，程序中点击刷新即可看到
 4. 下列所有方法都是在 gamepad 这个对象下的，所以需要 gamepad.xxx
 
 | 方法名                                 | 说明                                                         | 参数1          | 参数2                     | 参数3                     |
