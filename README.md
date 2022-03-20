@@ -24,7 +24,7 @@ AutomaticGamepad
 3. 运行AutomaticGamepad.exe
 4. 选择你要运行的脚本，点击绑定窗口，绑定成功后，设置运行次数，最后点击启动即可
 
-<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20220320234149677.png" alt="image-20220320234149677" style="zoom: 33%;" />
+<img src=".\Images\image-20220320234149677.png" alt="image-20220320234149677" style="zoom: 33%;" />
 
 ---
 
