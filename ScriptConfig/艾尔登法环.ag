@@ -1,0 +1,26 @@
+// 回城重置
+gamepad.Button("view")
+gamepad.Button("y")
+gamepad.Button("a")
+gamepad.Button("a")
+
+// 等待加载地图时间
+gamepad.Sleep(5500)
+
+// 往前走4s
+gamepad.Axis("lsy", 1, 4000)
+
+// 往左走1.5s
+gamepad.Axis("lsx", -1, 1500)
+
+// 向右旋转镜头
+gamepad.Axis("rsx", 0.5, 1000)
+
+// 向前走1.65s
+gamepad.Axis("lsy", 1, 1650)
+
+// 放战技
+gamepad.Trigger("lt", 1)
+
+// 等待怪被清的差不多
+gamepad.Sleep(5000)
