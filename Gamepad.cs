@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 using Nefarius.ViGEm.Client;
 
 
@@ -44,20 +45,35 @@ namespace AutomaticGamepad
             if (ConnectState)
                 return;
 
-            ConnectState = true;
-            Internal_Gamepad.Connect();
+            try
+            {
+                ConnectState = true;
+                Internal_Gamepad.Connect();
 
-            Console.WriteLine("Connect Gamepad");
+                Console.WriteLine("Connect Gamepad");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("虚拟手柄连接错误！\n" + ex);
+            }
         }
+
         public virtual void Disconnect()
         {
             if (!ConnectState)
                 return;
 
-            ConnectState = false;
-            Internal_Gamepad.Disconnect();
+            try
+            {
+                ConnectState = false;
+                Internal_Gamepad.Disconnect();
 
-            Console.WriteLine("Disconnect Gamepad");
+                Console.WriteLine("Disconnect Gamepad");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("虚拟手柄断开连接错误！\n" + ex);
+            }
         }
 
         public virtual void SetForeground()
@@ -69,14 +85,14 @@ namespace AutomaticGamepad
             }
         }
 
-        public virtual void Sleep(int milliseconds)
+        public virtual void Sleep(double milliseconds)
         {
-            Thread.Sleep(milliseconds);
+            Thread.Sleep((int)milliseconds);
         }
 
-        public abstract void Button(string name, int duration = 200);
-        public abstract void Trigger(string name, float value, int duration = 200);
-        public abstract void Axis(string name, float value, int duration = 200);
+        public abstract void Button(string name, double duration = 200);
+        public abstract void Trigger(string name, double value, double duration = 200);
+        public abstract void Axis(string name, double value, double duration = 200);
 
     }
 }
