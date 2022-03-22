@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Nefarius.ViGEm.Client;
@@ -24,62 +25,71 @@ namespace AutomaticGamepad
             m_Controller = Client.CreateXbox360Controller();
         }
 
-        public override void Button(string name, int duration = 200)
+        public override void Button(string name, double duration = 200)
         {
             if (XboxControllerNames.s_ButtonDic.TryGetValue(name, out var button))
                 SetButton(button, duration);
         }
 
-        public override void Trigger(string name, float value, int duration = 200)
+        public override void Trigger(string name, double value, double duration = 200)
         {
             if (XboxControllerNames.s_TriggerDic.TryGetValue(name, out var trigger))
                 SetTrigger(trigger, (byte)(value * byte.MaxValue), duration);
         }
 
-        public override void Axis(string name, float value, int duration = 200)
+        public override void Axis(string name, double value, double duration = 200)
         {
             if (XboxControllerNames.s_AxisDic.TryGetValue(name, out var axis))
                 SetAxis(axis, (short)(value * short.MaxValue), duration);
         }
 
-        public override void Sleep(int milliseconds)
+        public override void Axis2(string name1, string name2, double value1, double value2, double duration = 200)
         {
-            Thread.Sleep(milliseconds);
+            var result1 = XboxControllerNames.s_AxisDic.TryGetValue(name1, out var axis1);
+            var result2 = XboxControllerNames.s_AxisDic.TryGetValue(name2, out var axis2);
+            if (result1 && result2)
+            {
+                var len = Math.Pow(value1 + value2, 0.5F);
+                value1 = value1 / len;
+                value2 = value2 / len;
+
+                SetAxis2(axis1, axis2, (short)(value1 * short.MaxValue), (short)(value2 * short.MaxValue), duration);
+            }
         }
 
 
-        void SetButton(Xbox360Button button, int duration = 200)
+        void SetButton(Xbox360Button button, double duration = 200)
         {
             m_Controller.SetButtonState(button, true);
-            Thread.Sleep(duration);
+            Sleep(duration);
             m_Controller.SetButtonState(button, false);
-            Thread.Sleep(200);
+            Sleep(200);
         }
 
-        void SetTrigger(Xbox360Slider slider, byte value, int duration = 200)
+        void SetTrigger(Xbox360Slider slider, byte value, double duration = 200)
         {
             m_Controller.SetSliderValue(slider, value);
-            Thread.Sleep(duration);
+            Sleep(duration);
             m_Controller.SetSliderValue(slider, 0);
-            Thread.Sleep(200);
+            Sleep(200);
         }
 
-        void SetAxis(Xbox360Axis axis, short value, int duration = 200)
+        void SetAxis(Xbox360Axis axis, short value, double duration = 200)
         {
             m_Controller.SetAxisValue(axis, value);
-            Thread.Sleep(duration);
+            Sleep(duration);
             m_Controller.SetAxisValue(axis, 0);
-            Thread.Sleep(200);
+            Sleep(200);
         }
 
-        void SetAxis2(Xbox360Axis axis1, Xbox360Axis axis2, short value1, short value2, int duration = 200)
+        void SetAxis2(Xbox360Axis axis1, Xbox360Axis axis2, short value1, short value2, double duration = 200)
         {
             m_Controller.SetAxisValue(axis1, value1);
             m_Controller.SetAxisValue(axis2, value2);
-            Thread.Sleep(duration);
+            Sleep(duration);
             m_Controller.SetAxisValue(axis1, 0);
             m_Controller.SetAxisValue(axis2, 0);
-            Thread.Sleep(200);
+            Sleep(200);
         }
     }
 

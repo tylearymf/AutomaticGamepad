@@ -30,7 +30,7 @@ namespace AutomaticGamepad
         Color m_StopColor = ColorTranslator.FromHtml("#D93A49");
 
         V8ScriptEngine m_ScriptEngine;
-        bool m_IsThreadRunning;
+        bool m_IsRunning;
 
 
         public Form1()
@@ -40,6 +40,14 @@ namespace AutomaticGamepad
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            try
+            {
+                var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                var splits = version.Split('.');
+                label6.Text = $"V{splits[0]}.{splits[1]}";
+            }
+            catch { }
+
             comboBox1.DrawMode = DrawMode.OwnerDrawVariable;
             checkBox2.Checked = true;
 
@@ -59,7 +67,11 @@ namespace AutomaticGamepad
 
             m_Gamepad = new XboxGamepad();
             m_ScriptEngine = new V8ScriptEngine("v8-engine", V8ScriptEngineFlags.DisableGlobalMembers);
+            m_ScriptEngine.DisableFloatNarrowing = true;
             m_ScriptEngine.AddHostObject("gamepad", m_Gamepad);
+
+            m_Gamepad.Connect();
+            Thread.Sleep(200);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -80,22 +92,20 @@ namespace AutomaticGamepad
             }
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkBox1_Click(object sender, EventArgs e)
         {
-            if (checkBox1.Checked)
-                SetCheckBox(CheckBoxType.Count);
+            SetCheckBox(CheckBoxType.Count);
         }
 
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        private void checkBox2_Click(object sender, EventArgs e)
         {
-            if (checkBox2.Checked)
-                SetCheckBox(CheckBoxType.Loop);
+            SetCheckBox(CheckBoxType.Loop);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var lastState = m_Gamepad.ConnectState;
-            if (!lastState)
+            var isRunning = m_IsRunning;
+            if (!isRunning)
             {
                 var totalSec = (DateTime.Now - m_LastStartTime).TotalSeconds;
                 if (totalSec <= StartIntervalTime)
@@ -191,8 +201,8 @@ namespace AutomaticGamepad
         {
             var action = new Action(() =>
             {
-                var state = m_Gamepad.ConnectState;
-                if (state)
+                var isRunning = m_IsRunning;
+                if (isRunning)
                 {
                     button1.Text = "停止";
                     button1.BackColor = m_StopColor;
@@ -209,7 +219,7 @@ namespace AutomaticGamepad
                     timer1.Stop();
                 }
 
-                groupBox3.Enabled = !state;
+                groupBox3.Enabled = !isRunning;
 
                 RefreshTimeUI();
             });
@@ -274,7 +284,7 @@ namespace AutomaticGamepad
 
         void Start()
         {
-            if (m_IsThreadRunning)
+            if (m_IsRunning)
                 return;
 
             var selectIndex = comboBox1.SelectedIndex;
@@ -311,9 +321,8 @@ namespace AutomaticGamepad
                 return;
             }
 
-            m_Gamepad.Connect();
-
-            Thread.Sleep(200);
+            // 标记状态为运行
+            m_IsRunning = true;
 
             // 将目标窗口激活
             m_Gamepad.SetForeground();
@@ -321,29 +330,25 @@ namespace AutomaticGamepad
             // 刷新UI
             RefreshUI();
 
-            m_IsThreadRunning = true;
             var scriptObj = m_ScriptEngine.Compile(jsCode);
             ThreadPool.QueueUserWorkItem(state => Execute(scriptObj));
         }
 
         void Stop()
         {
-            if (!m_IsThreadRunning)
+            if (!m_IsRunning)
                 return;
 
-            m_Gamepad.Disconnect();
-            Thread.Sleep(200);
+            // 标记状态为停止
+            m_IsRunning = false;
 
             // 刷新UI
             RefreshUI();
-
-            // 标记线程状态为停止
-            m_IsThreadRunning = false;
         }
 
         void Execute(object codeObj)
         {
-            while (m_IsThreadRunning)
+            while (m_IsRunning)
             {
                 try
                 {

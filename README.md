@@ -110,6 +110,31 @@ gamepad.Sleep(5000)
 ```
 
 
+---
+
+**紧急BUG解决方法**
+
+目前虚拟手柄的驱动程序在该程序关闭后可能会出现不自动卸载，会导致电脑关机时蓝屏或者其他诡异情况。这个是 [ViGEmBus的Bug，目前还未解决](https://github.com/ViGEm/ViGEmBus/issues/22)
+
+可以更新回 2009年的 旧驱动试试效果，不保证百分百解决
+
+1. 下载Drivers/Fix目录下的cab包，并解压到电脑里，里面有个 xusb21.inf
+
+2. 打开该程序，然后打开设备管理器
+
+   1. 右键 Xbox 手柄的驱动，可以看到驱动日期是 2019年的
+   2. 点击 更新驱动程序
+   3. 点击 从磁盘安装
+   4. 点击浏览 -> 选择上面解压的 xusb21.inf
+   5. 确定安装后，可以看到驱动日期是 2009年的
+   6. 关掉程序，重启电脑即可
+
+   <img src=".\Images\QQ截图20220322184349.png" alt="QQ截图20220322184349" style="zoom:25%;" /><img src=".\Images\QQ截图20220322184643.png" alt="QQ截图20220322184643" style="zoom:25%;" />
+
+   <img src=".\Images\QQ截图20220322184655.png" alt="QQ截图20220322184655" style="zoom:25%;" />
+
+   <img src=".\Images\QQ截图20220322184726.png" alt="QQ截图20220322184726" style="zoom:25%;" />
+
 
 
 ---
@@ -118,6 +143,3 @@ gamepad.Sleep(5000)
 
 > [ViGEmBus](https://github.com/ViGEm/ViGEmBus)
 > [ViGEm.NET](https://github.com/tylearymf/ViGEm.NET)
-
-
-

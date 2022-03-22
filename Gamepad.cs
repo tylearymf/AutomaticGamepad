@@ -69,14 +69,15 @@ namespace AutomaticGamepad
             }
         }
 
-        public virtual void Sleep(int milliseconds)
+        public virtual void Sleep(double milliseconds)
         {
-            Thread.Sleep(milliseconds);
+            Thread.Sleep((int)milliseconds);
         }
 
-        public abstract void Button(string name, int duration = 200);
-        public abstract void Trigger(string name, float value, int duration = 200);
-        public abstract void Axis(string name, float value, int duration = 200);
+        public abstract void Button(string name, double duration = 200);
+        public abstract void Trigger(string name, double value, double duration = 200);
+        public abstract void Axis(string name, double value, double duration = 200);
+        public abstract void Axis2(string name1, string name2, double value1, double value2, double duration = 200);
 
     }
 }
