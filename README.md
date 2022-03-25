@@ -13,7 +13,7 @@
 ## Prerequisites
 
 1. You need a PC, an Xbox (or PS5, PS4)
-2. The idea is to stream an Xbox (or PS5) on a PC over a local area network, and then use the software to send analog gamepad signals to a streaming window on the PC  
+2. The idea is to stream an Xbox (or PS5) on a PC over a local area network, and then use the software to send virtual gamepad signals to a streaming window on the PC  
 
 # Usage
 
