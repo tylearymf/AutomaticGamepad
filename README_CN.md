@@ -10,18 +10,10 @@
 | ----------------------- | :----------------: | :----------------: | :-----------: | :-----------: |
 | 测试情况:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   |  :question:   |
 
----
-
-
-
 # 前置条件
 
 1. 需要一台PC，一台Xbox（或者PS5、PS4）
 2. 原理是通过本地局域网内用PC串流Xbox（或者PS5），然后通过该软件发送模拟手柄的信号到PC上的串流窗口
-
----
-
-
 
 # 使用说明
 
@@ -264,6 +256,7 @@ void axis2(string name1, string name2, double val1, double val2, double duration
         <td align="center">"rsy"</td>
     </tr>
 </table>
+
 ## 例子说明
 
 ```javascript
