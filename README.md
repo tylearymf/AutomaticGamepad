@@ -111,15 +111,6 @@ gamepad.Sleep(5000)
 
 
 
-
----
-
-**存在的BUG**
-
-目前该程序在退出的时候可能出现Xbox虚拟手柄的驱动死锁，导致电脑关机时蓝屏或者出现其他诡异情况，请参考[ViGEmBus的驱动死锁问题](https://github.com/ViGEm/ViGEmBus/issues/22)
-
-
-
 ---
 
 **引用项目**

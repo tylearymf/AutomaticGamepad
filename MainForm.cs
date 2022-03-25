@@ -1,25 +1,25 @@
-﻿
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
 using System.Threading;
+using System.Windows.Forms;
 using Microsoft.ClearScript.V8;
-
 
 namespace AutomaticGamepad
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         const string FileExtension = ".ag";
         const int StartIntervalTime = 1;
+        const int StopIntervalTime = 1;
 
-        Gamepad m_Gamepad;
+        public Gamepad Gamepad { private set; get; }
+
         DateTime m_TickTime;
-
         DateTime m_LastStartTime;
         ToolTip m_Tooltip;
+        ControllerForm m_ControllerForm;
         bool m_ShowTooltipInItem;
 
         CheckBoxType m_CheckBoxType;
@@ -33,7 +33,7 @@ namespace AutomaticGamepad
         bool m_IsRunning;
 
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -60,24 +60,43 @@ namespace AutomaticGamepad
             m_Tooltip.InitialDelay = 1000;
             m_Tooltip.ReshowDelay = 0;
 
-            Stop(true);
             SetCheckBox(CheckBoxType.Count);
-
             RefreshDropDownList();
+            RefreshUI();
 
-            m_Gamepad = new XboxGamepad();
-            m_ScriptEngine = new V8ScriptEngine("v8-engine", V8ScriptEngineFlags.DisableGlobalMembers);
+            var rootPath = Environment.CurrentDirectory;
+            var playStationFile = Path.Combine(rootPath, "playstation");
+            Gamepad = File.Exists(playStationFile) ? new PlaystationGamepad() : (Gamepad)new XboxGamepad();
+            Gamepad.Connect();
+
+            switch (Gamepad.GamepadType)
+            {
+                case GamepadType.Xbox:
+                    m_ControllerForm = new XboxController();
+                    break;
+                case GamepadType.PlayStation:
+                    m_ControllerForm = new PlayStationController();
+                    break;
+            }
+            m_ControllerForm.MainForm = this;
+            m_ControllerForm.Hide();
+
+            textBox1.Text = Gamepad.ApplicationName;
+            pictureBox1.Image = (Bitmap)Properties.Resources.ResourceManager.GetObject(Gamepad.PictureName);
+            pictureBox1.Visible = !string.IsNullOrEmpty(Gamepad.PictureName);
+
+            m_ScriptEngine = new V8ScriptEngine("v8-engine");
             m_ScriptEngine.DisableFloatNarrowing = true;
-            m_ScriptEngine.AddHostObject("gamepad", m_Gamepad);
-
-            m_Gamepad.Connect();
-            Thread.Sleep(200);
+            m_ScriptEngine.ExposeHostObjectStaticMembers = false;
+            m_ScriptEngine.AddHostObject(string.Empty, Microsoft.ClearScript.HostItemFlags.GlobalMembers, Gamepad);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            m_Gamepad?.Dispose();
-            m_Gamepad = null;
+            Stop(true);
+
+            Gamepad?.Dispose();
+            Gamepad = null;
 
             m_ScriptEngine?.Dispose();
             m_ScriptEngine = null;
@@ -138,7 +157,7 @@ namespace AutomaticGamepad
             }
 
             var handle = GetProcessWindow(text);
-            m_Gamepad.Handle = handle;
+            Gamepad.Handle = handle;
 
             var msg = $"窗口绑定状态：{(handle != IntPtr.Zero ? "绑定成功" : "绑定失败")}(Ptr:{handle})";
             label3.Text = msg;
@@ -188,6 +207,35 @@ namespace AutomaticGamepad
             m_ShowTooltipInItem = false;
         }
 
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            if (m_ControllerForm.Visible)
+            {
+                m_ControllerForm.Hide();
+            }
+            else
+            {
+                // 设置Owner，子窗体会随主窗体的激活而激活
+                m_ControllerForm.ShowInTaskbar = false;
+                m_ControllerForm.Owner = this;
+                m_ControllerForm.Show();
+
+                UpdateControllerFormPos();
+            }
+        }
+
+        private void MainForm_Move(object sender, EventArgs e)
+        {
+            if (m_ControllerForm?.Visible ?? false)
+                UpdateControllerFormPos();
+        }
+
+        void UpdateControllerFormPos()
+        {
+            m_ControllerForm.Left = Left + Width - 5;
+            m_ControllerForm.Top = Top + Height - m_ControllerForm.Height - 8;
+        }
+
         void SetCheckBox(CheckBoxType type)
         {
             m_CheckBoxType = type;
@@ -220,6 +268,9 @@ namespace AutomaticGamepad
                 }
 
                 groupBox3.Enabled = !isRunning;
+
+                if (m_ControllerForm != null)
+                    m_ControllerForm.Enabled = !isRunning;
 
                 RefreshTimeUI();
             });
@@ -323,9 +374,10 @@ namespace AutomaticGamepad
 
             // 标记状态为运行
             m_IsRunning = true;
+            Gamepad.AbortThread = false;
 
             // 将目标窗口激活
-            m_Gamepad.SetForeground();
+            Gamepad.SetForeground();
 
             // 刷新UI
             RefreshUI();
@@ -336,11 +388,19 @@ namespace AutomaticGamepad
 
         void Stop(bool force = false)
         {
-            if (!m_IsRunning)
+            if (!m_IsRunning && !force)
                 return;
+
+            var totalSec = (DateTime.Now - m_LastStartTime).TotalSeconds;
+            if (!force && totalSec <= StopIntervalTime)
+            {
+                MessageBox.Show($"请不要太快操作！");
+                return;
+            }
 
             // 标记状态为停止
             m_IsRunning = false;
+            Gamepad.AbortThread = true;
 
             // 刷新UI
             RefreshUI();
