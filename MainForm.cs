@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using Microsoft.ClearScript.V8;
+using LanguageNames = AutomaticGamepad.Properties.Language_Chinese;
 
 namespace AutomaticGamepad
 {
@@ -64,9 +65,15 @@ namespace AutomaticGamepad
             RefreshDropDownList();
             RefreshUI();
 
-            var rootPath = Environment.CurrentDirectory;
-            var playStationFile = Path.Combine(rootPath, "playstation");
-            Gamepad = File.Exists(playStationFile) ? new PlaystationGamepad() : (Gamepad)new XboxGamepad();
+            switch (ConfigManager.GetGamepadType())
+            {
+                case GamepadType.Xbox:
+                    Gamepad = new XboxGamepad();
+                    break;
+                case GamepadType.PlayStation:
+                    Gamepad = new PlaystationGamepad();
+                    break;
+            }
             Gamepad.Connect();
 
             switch (Gamepad.GamepadType)
@@ -81,7 +88,7 @@ namespace AutomaticGamepad
             m_ControllerForm.MainForm = this;
             m_ControllerForm.Hide();
 
-            textBox1.Text = Gamepad.ApplicationName;
+            textBox1.Text = Gamepad.BindApplicationName;
             pictureBox1.Image = (Bitmap)Properties.Resources.ResourceManager.GetObject(Gamepad.PictureName);
             pictureBox1.Visible = !string.IsNullOrEmpty(Gamepad.PictureName);
 
@@ -129,7 +136,7 @@ namespace AutomaticGamepad
                 var totalSec = (DateTime.Now - m_LastStartTime).TotalSeconds;
                 if (totalSec <= StartIntervalTime)
                 {
-                    MessageBox.Show($"请不要太快操作！");
+                    MessageBox.Show(Language.GetString(nameof(LanguageNames.too_fast)));
                     return;
                 }
 
@@ -152,14 +159,15 @@ namespace AutomaticGamepad
             var text = textBox1.Text;
             if (string.IsNullOrWhiteSpace(text))
             {
-                MessageBox.Show("窗口标题不能为空！");
+                MessageBox.Show(Language.GetString(nameof(LanguageNames.title_cannot_empty)));
                 return;
             }
 
             var handle = GetProcessWindow(text);
             Gamepad.Handle = handle;
 
-            var msg = $"窗口绑定状态：{(handle != IntPtr.Zero ? "绑定成功" : "绑定失败")}(Ptr:{handle})";
+            var binding_status = $"{(handle != IntPtr.Zero ? Language.GetString(nameof(LanguageNames.success)) : Language.GetString(nameof(LanguageNames.failed)))}";
+            var msg = $"{Language.GetString(nameof(LanguageNames.binding_status))} {binding_status}(Ptr:{handle})";
             label3.Text = msg;
             Console.WriteLine(msg);
         }
@@ -230,6 +238,11 @@ namespace AutomaticGamepad
                 UpdateControllerFormPos();
         }
 
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/tylearymf/AutomaticGamepad");
+        }
+
         void UpdateControllerFormPos()
         {
             m_ControllerForm.Left = Left + Width - 5;
@@ -252,7 +265,7 @@ namespace AutomaticGamepad
                 var isRunning = m_IsRunning;
                 if (isRunning)
                 {
-                    button1.Text = "停止";
+                    button1.Text = Language.GetString(nameof(LanguageNames.stop));
                     button1.BackColor = m_StopColor;
                     timer1.Start();
 
@@ -262,7 +275,7 @@ namespace AutomaticGamepad
                 }
                 else
                 {
-                    button1.Text = "启动";
+                    button1.Text = Language.GetString(nameof(LanguageNames.start));
                     button1.BackColor = m_StartColor;
                     timer1.Stop();
                 }
@@ -304,7 +317,7 @@ namespace AutomaticGamepad
                 }
             }
 
-            var msg = $"当前未运行{textBox1.Text}应用";
+            var msg = Language.GetString(nameof(LanguageNames.not_run), textBox1.Text);
             MessageBox.Show(msg);
 
             return IntPtr.Zero;
@@ -341,7 +354,7 @@ namespace AutomaticGamepad
             var selectIndex = comboBox1.SelectedIndex;
             if (selectIndex == -1)
             {
-                MessageBox.Show($"请选择一个脚本");
+                MessageBox.Show(Language.GetString(nameof(LanguageNames.select_script)));
                 return;
             }
 
@@ -351,7 +364,7 @@ namespace AutomaticGamepad
 
             if (!File.Exists(filePath))
             {
-                MessageBox.Show($"脚本文件不存在{filePath}");
+                MessageBox.Show(Language.GetString(nameof(LanguageNames.file_not_exist), filePath));
                 return;
             }
 
@@ -368,7 +381,7 @@ namespace AutomaticGamepad
             var jsCode = File.ReadAllText(filePath).Trim();
             if (string.IsNullOrWhiteSpace(jsCode))
             {
-                MessageBox.Show($"{filePath} 文件中无代码可执行！");
+                MessageBox.Show(Language.GetString(nameof(LanguageNames.no_code), filePath));
                 return;
             }
 
@@ -394,7 +407,7 @@ namespace AutomaticGamepad
             var totalSec = (DateTime.Now - m_LastStartTime).TotalSeconds;
             if (!force && totalSec <= StopIntervalTime)
             {
-                MessageBox.Show($"请不要太快操作！");
+                MessageBox.Show(Language.GetString(nameof(LanguageNames.too_fast)));
                 return;
             }
 

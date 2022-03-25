@@ -7,6 +7,8 @@ namespace AutomaticGamepad
 {
     public class PlaystationGamepad : Gamepad
     {
+        #region Button Alias
+
         public string Button_Triangle = "b1";
         public string Button_Circle = "b2";
         public string Button_Cross = "b3";
@@ -36,9 +38,11 @@ namespace AutomaticGamepad
         public string RightStickX = "rsx";
         public string RightStickY = "rsy";
 
+        #endregion
+
 
         public override GamepadType GamepadType => GamepadType.PlayStation;
-        public override string ApplicationName => "PS Remote Play";
+        public override string BindApplicationName => "PS Remote Play";
         public override string PictureName => "ps5";
         protected override IVirtualGamepad Internal_Gamepad
         {
@@ -83,10 +87,8 @@ namespace AutomaticGamepad
                 { Trigger_L2, (GamepadTrigger)DualShock4Slider.LeftTrigger },
                 { Trigger_R2, (GamepadTrigger)DualShock4Slider.RightTrigger },
 
-                // Left Stick
                 { LeftStickX, (GamepadAxis)DualShock4Axis.LeftThumbX },
                 { LeftStickY, (GamepadAxis)DualShock4Axis.LeftThumbY },
-                // Right Stick
                 { RightStickX, (GamepadAxis)DualShock4Axis.RightThumbX },
                 { RightStickY, (GamepadAxis)DualShock4Axis.RightThumbY },
             };

@@ -67,7 +67,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigManager.cs" />
     <Compile Include="Gamepad.cs" />
+    <Compile Include="Language.cs" />
     <Compile Include="Misc\ControllerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +87,11 @@
     <Compile Include="PlayStation\PlayStationController.Designer.cs">
       <DependentUpon>PlayStationController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Language_Chinese.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Language_Chinese.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -99,11 +106,19 @@
     <Compile Include="Xbox\XboxGamepad.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="MainForm.en-US.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayStation\PlayStationController.resx">
       <DependentUpon>PlayStationController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Language_English.resx" />
+    <EmbeddedResource Include="Properties\Language_Chinese.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Language_Chinese.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -150,6 +165,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\point.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Image1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -22,7 +22,7 @@ namespace AutomaticGamepad
         public bool AbortThread { set; get; }
 
         public abstract GamepadType GamepadType { get; }
-        public abstract string ApplicationName { get; }
+        public abstract string BindApplicationName { get; }
         public abstract string PictureName { get; }
         protected abstract IVirtualGamepad Internal_Gamepad { set; get; }
         protected abstract Dictionary<string, GamepadProperty> GamepadPropertyDic { get; }
@@ -275,8 +275,8 @@ namespace AutomaticGamepad
 
     public enum GamepadType
     {
-        Xbox,
-        PlayStation,
+        Xbox = 0,
+        PlayStation = 1,
     }
 
     public class GamepadProperty

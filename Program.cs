@@ -11,6 +11,9 @@ namespace AutomaticGamepad
         [STAThread]
         static void Main()
         {
+            ConfigManager.Init();
+            Language.Init();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());

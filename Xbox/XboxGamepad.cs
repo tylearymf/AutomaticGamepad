@@ -7,6 +7,8 @@ namespace AutomaticGamepad
 {
     public class XboxGamepad : Gamepad
     {
+        #region Button Alias
+
         public string Button_A = "a";
         public string Button_B = "b";
         public string Button_X = "x";
@@ -35,9 +37,11 @@ namespace AutomaticGamepad
         public string RightStickX = "rsx";
         public string RightStickY = "rsy";
 
+        #endregion
+
 
         public override GamepadType GamepadType => GamepadType.Xbox;
-        public override string ApplicationName => "Xbox";
+        public override string BindApplicationName => "Xbox";
         public override string PictureName => "xbox";
         protected override IVirtualGamepad Internal_Gamepad
         {

@@ -1,18 +1,23 @@
-AutomaticGamepad
+# AutomaticGamepad
+
+
 
 **1. 程序用途**
 
 * 支持编写脚本控制虚拟手柄，用于实现一些重复功能
-
 * 支持PC上任何能支持手柄的游戏
-----
+
+| 支持设备:video_game:    |     Xbox One X     |   Xbox Series X    | PlayStation 4 | PlayStation 5 |
+| ----------------------- | :----------------: | :----------------: | :-----------: | :-----------: |
+| 测试情况:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   |  :question:   |
+
+---
 
 
 
 **2. 前置条件**
 
-1. 需要一台PC、Xbox，原理是通过本地局域网内用PC串流Xbox，然后通过该软件发送模拟手柄的信号到PC上的串流窗口
-2. 理论上PS4、PS5的也可以用，代码里面是有接口可以创建PS的手柄控制器的。
+1. 需要一台PC、Xbox（或者PS5），原理是通过本地局域网内用PC串流Xbox（或者PS5），然后通过该软件发送模拟手柄的信号到PC上的串流窗口
 
 ---
 
@@ -21,11 +26,14 @@ AutomaticGamepad
 **3. 使用说明**
 
 1. 安装Drivers目录中对应版本的模拟手柄驱动程序 ViGEmBusSetup.msi
-2. 运行Xbox应用，串流你的Xbox
+2. 运行Xbox.exe（或者PS Remote Play.exe），串流你的Xbox（或者PS5）
+   1. 注意：如果是需要串流PS，则需要在当前程序的目录下创建一个名为 playstation 的无后缀文件
 3. 运行AutomaticGamepad.exe
 4. 选择你要运行的脚本，点击绑定窗口，绑定成功后，设置运行次数，最后点击启动即可
 
-<img src=".\Images\image-20220320234149677.png" alt="image-20220320234149677" style="zoom: 25%;" />
+<img src=".\Images\xbox.png" alt="Xbox的虚拟控制器" style="zoom: 25%;" />
+
+<img src=".\Images\playstation.png" alt="Playstation的虚拟控制器" style="zoom: 25%;" />
 
 ---
 
@@ -36,14 +44,13 @@ AutomaticGamepad
 1. 脚本语言是JavaScript
 2. 脚本文件后缀为 .ag
 3. 将脚本文件放置在与该软件同级的目录下，程序中点击刷新即可看到
-4. 下列所有方法都是在 gamepad 这个对象下的，所以需要 gamepad.xxx
 
-| 方法名                                 | 说明                                                         | 参数1          | 参数2                     | 参数3                     |
-| :------------------------------------- | ------------------------------------------------------------ | -------------- | ------------------------- | ------------------------- |
-| gamepad.Button(name, duration)         | 按下按钮，然后松开                                           | 按键名字       | 按下时长，默认值为200毫秒 |                           |
-| gamepad.Trigger(name, value, duration) | 按下触发器，然后松开                                         | 触发器名字     | 范围为 [0, 1]             | 按下时长，默认值为200毫秒 |
-| gamepad.Axis(name, value, duration)    | 移动摇杆，然后松开，摇杆值以左下角(-1,-1)，右上角为(1,1)，中间为(0,0)，默认摇杆不推动的时候值为(0,0) | 摇杆轴名字     | 范围为 [-1, 1]            | 按下时长，默认值为200毫秒 |
-| gamepad.Sleep(duration)                | 将当前线程休眠                                               | 休眠时长(毫秒) |                           |                           |
+| 方法名                         | 说明                                                         | 参数1          | 参数2                     | 参数3                     |
+| :----------------------------- | ------------------------------------------------------------ | -------------- | ------------------------- | ------------------------- |
+| button(name, duration)         | 按下按钮然后松开                                             | 按键名字       | 按下时长，默认值为200毫秒 |                           |
+| trigger(name, value, duration) | 按下触发器，然后松开                                         | 触发器名字     | 范围为 [0, 1]             | 按下时长，默认值为200毫秒 |
+| axis(name, value, duration)    | 移动摇杆，然后松开，摇杆值以左下角(-1,-1)，右上角为(1,1)，中间为(0,0)，默认摇杆不推动的时候值为(0,0) | 摇杆轴名字     | 范围为 [-1, 1]            | 按下时长，默认值为200毫秒 |
+| sleep(duration)                | 将当前线程休眠                                               | 休眠时长(毫秒) |                           |                           |
 
 | 按键名字                     | 对应的字符串 | 举个栗子                                                     |
 | ---------------------------- | ------------ | ------------------------------------------------------------ |
@@ -81,37 +88,28 @@ AutomaticGamepad
 // 步骤是要先去到这个地图“通往王朝的崖上道路”，并双持“神躯化剑”，然后就按照上面的使用说明走一遍流程即可
 
 // 回城重置
-gamepad.Button("view")
-gamepad.Button("y")
-gamepad.Button("a")
-gamepad.Button("a")
+button("view")
+button("y")
+button("a")
+button("a")
 
 // 等待加载地图时间
-gamepad.Sleep(5500)
+sleep(5500)
 
-// 往前走4s
-gamepad.Axis("lsy", 1, 4000)
-
-// 往左走1.5s
-gamepad.Axis("lsx", -1, 1500)
-
-// 向右旋转镜头
-gamepad.Axis("rsx", 0.5, 1000)
-
-// 向前走1.65s
-gamepad.Axis("lsy", 1, 1650)
+// 往左前走
+axis2("lsx", "lsy", -0.31, 1, 5200)
 
 // 放战技
-gamepad.Trigger("lt", 1)
+trigger("lt", 1)
 
 // 等待怪被清的差不多
-gamepad.Sleep(5000)
+sleep(5000)
 
 ```
 
-
-
 ---
+
+
 
 **引用项目**
 
