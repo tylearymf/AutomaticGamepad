@@ -1,117 +1,297 @@
 # AutomaticGamepad
 
+[中文文档](https://github.com/tylearymf/AutomaticGamepad/blob/main/README_CN.md)
 
+# About
 
-**1. 程序用途**
+* Write automated scripts for console games
 
-* 支持编写脚本控制虚拟手柄，用于实现一些重复功能
-* 支持PC上任何能支持手柄的游戏
+| Supported Devices:video_game:  |     Xbox One X     |   Xbox Series X    | PlayStation 4 | PlayStation 5 |
+| ------------------------------ | :----------------: | :----------------: | :-----------: | :-----------: |
+| **Test Result**:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   |  :question:   |
 
-| 支持设备:video_game:    |     Xbox One X     |   Xbox Series X    | PlayStation 4 | PlayStation 5 |
-| ----------------------- | :----------------: | :----------------: | :-----------: | :-----------: |
-| 测试情况:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   |  :question:   |
+## Prerequisites
 
----
+1. You need a PC, an Xbox (or PS5, PS4)
+2. The idea is to stream an Xbox (or PS5) on a PC over a local area network, and then use the software to send analog gamepad signals to a streaming window on the PC  
 
+# Usage
 
+1. Install the virtual gamepad driver **ViGEmBusSetup.msi** in the Drivers directory   
+2. Run Xbox.exe (or PS Remote Play.exe) to stream your Xbox (or PS5).  
+3. Configure **config.ini** and set the **GamepadType** parameter
+   1.  Xbox：GamepadType=0
+   2.  PlayStation：GamepadType=1
+4. Run AutomaticGamepad.exe
+5. Select the script you want to run, confirm that the window binding is successful, set the number of times to run, and finally click Start
 
-**2. 前置条件**
+<img src=".\Images\xbox_en.png" alt="Xbox Virtual Controller" />
 
-1. 需要一台PC、Xbox（或者PS5），原理是通过本地局域网内用PC串流Xbox（或者PS5），然后通过该软件发送模拟手柄的信号到PC上的串流窗口
-
----
-
-
-
-**3. 使用说明**
-
-1. 安装Drivers目录中对应版本的模拟手柄驱动程序 ViGEmBusSetup.msi
-2. 运行Xbox.exe（或者PS Remote Play.exe），串流你的Xbox（或者PS5）
-   1. 注意：如果是需要串流PS，则需要在当前程序的目录下创建一个名为 playstation 的无后缀文件
-3. 运行AutomaticGamepad.exe
-4. 选择你要运行的脚本，点击绑定窗口，绑定成功后，设置运行次数，最后点击启动即可
-
-<img src=".\Images\xbox.png" alt="Xbox的虚拟控制器" style="zoom: 25%;" />
-
-<img src=".\Images\playstation.png" alt="Playstation的虚拟控制器" style="zoom: 25%;" />
+<img src=".\Images\playstation_en.png" alt="Playstation Virtual Controller" />
 
 ---
 
 
 
-**4. 脚本说明**
+# Script functions
 
-1. 脚本语言是JavaScript
-2. 脚本文件后缀为 .ag
-3. 将脚本文件放置在与该软件同级的目录下，程序中点击刷新即可看到
+1. The scripting language is JavaScript
+2. The script file suffix is .ag
+3. Place the script file in the same directory as the current program, and click Refresh in the program to view it
 
-| 方法名                         | 说明                                                         | 参数1          | 参数2                     | 参数3                     |
-| :----------------------------- | ------------------------------------------------------------ | -------------- | ------------------------- | ------------------------- |
-| button(name, duration)         | 按下按钮然后松开                                             | 按键名字       | 按下时长，默认值为200毫秒 |                           |
-| trigger(name, value, duration) | 按下触发器，然后松开                                         | 触发器名字     | 范围为 [0, 1]             | 按下时长，默认值为200毫秒 |
-| axis(name, value, duration)    | 移动摇杆，然后松开，摇杆值以左下角(-1,-1)，右上角为(1,1)，中间为(0,0)，默认摇杆不推动的时候值为(0,0) | 摇杆轴名字     | 范围为 [-1, 1]            | 按下时长，默认值为200毫秒 |
-| sleep(duration)                | 将当前线程休眠                                               | 休眠时长(毫秒) |                           |                           |
+## sleep
 
-| 按键名字                     | 对应的字符串 | 举个栗子                                                     |
-| ---------------------------- | ------------ | ------------------------------------------------------------ |
-| A键                          | "a"          | gamepad.Button("a")，按下A键                                 |
-| B键                          | “b"          | gamepad.Button("b")，按下B键                                 |
-| X键                          | “x"          | gamepad.Button("x")，按下X键                                 |
-| Y键                          | "y"          | gamepad.Button("y")，按下Y键                                 |
-| LB键                         | "lb"         | gamepad.Button("lb", 500)，按下LB键，500毫秒后松开           |
-| RB键                         | "rb"         | gamepad.Button("rb", 300)，按下RB键，300毫秒后松开           |
-| 左摇杆按下键                 | "lsb"        | gamepad.Button("lsb")，左摇杆按下                            |
-| 右摇杆按下键                 | "rsb"        | gamepad.Button("rsb")，右摇杆按下                            |
-| Dpad的上键                   | "up"         | gamepad.Button("up")，按下Dpad的上键                         |
-| Dpad的下键                   | "down"       | gamepad.Button("down")，按下Dpad的下键                       |
-| Dpad的左键                   | "left"       | gamepad.Button("left")，按下Dpad的左键                       |
-| Dpad的右键                   | "right"      | gamepad.Button("right")，按下Dpad的右键                      |
-| XBOX键（中间亮白灯键那个）   | "home"       | gamepad.Button("home")                                       |
-| 视图键（XBOX键左下方的那个） | "view"       | gamepad.Button("view")                                       |
-| 菜单键（XBOX键右下方的那个） | "menu"       | gamepad.Button("menu")                                       |
-| LT触发器                     | "lt"         | gamepad.Trigger("lt", 0.5, 500)，按压LT触发器到一半的值，按压500毫秒后松开 |
-| RT触发器                     | "rt"         | gamepad.Trigger("rt", 1, 300)，按压RT触发器到最大值，按压300毫秒后松开 |
-| 左摇杆X轴                    | "lsx"        | gamepad.Axis("lsx", -1, 1000)，推动左摇杆到正左边的尽头，1000毫秒后松开 |
-| 左摇杆Y轴                    | "lsy"        | gamepad.Axis("lsy", 0.8, 500)，推动左摇杆到正上方的80%左右位置，500毫秒后松开 |
-| 右摇杆X轴                    | "rsx"        | gamepad.Axis("rsx", 1, 3000)，推动右摇杆到正右方的尽头，3000毫秒后松开 |
-| 右摇杆Y轴                    | "rsy"        | gamepad.Axis("rsy", -1, 1000)，推动右摇杆到正下方的尽头，1000毫秒后松开 |
+```c#
+// Put the program to sleep for a while
+void sleep(double milliseconds)
+```
 
----
+* milliseconds: sleep time
+
+## button
+
+```c#
+// Press button
+// For example, press LB button, or L1 button
+void button(string name, double duration = 200)
+```
+
+* name：[Button Key Name](#button_key_name)
+* duration：Duration of the press. The default value is 200 ms
+
+## dpad
+
+```c#
+// Press the DPAD button
+// For example, press the up button of the DPad
+void dpad(string name, double duration = 200)
+```
+
+* name：[DPad Key Name](#dpad_key_name)
+* duration：Duration of the press. The default value is 200 ms
+
+## trigger
+
+```c#
+// Press the trigger
+// For example, press LT or RT, L1 or R1
+void trigger(string name, double val, double duration = 200)
+```
+
+* name：[Trigger Key Name](#trigger_key_name)
+* val：Trigger press value, range is [0, 1], full press is 1
+* duration：Duration of the press. The default value is 200 ms
+
+## axis
+
+```c#
+// Push the single axis of the joystick
+// For example, push the X-axis or Y-axis of the left joystick, or push the X-axis or Y-axis of the right joystick
+void axis(string name, double val, double duration = 200)
+```
+
+* name：[Axis Key Name](#axis_key_name)
+* val：The joystick push value, the range is [-1, 1], the lower left is -1, and the upper right is 1
+* duration：Duration of the press. The default value is 200 ms
+
+## axis2
+
+```c#
+// Push the two axes of the joystick
+void axis2(string name1, string name2, double val1, double val2, double duration = 200)
+```
+
+* name1：[Axis Key Name](#axis_key_name)
+* name2：[Axis Key Name](#axis_key_name)
+* val1：The joystick push value, the range is [-1, 1], the lower left is -1, and the upper right is 1
+* val2：The joystick push value, the range is [-1, 1], the lower left is -1, and the upper right is 1
+* duration：Duration of the press. The default value is 200 ms
+
+## Custom key name
+
+* Xbox：[XboxGamepad.cs](https://github.com/tylearymf/AutomaticGamepad/blob/main/Xbox/XboxGamepad.cs)
+* PlayStation：[PlaystationGamepad.cs](https://github.com/tylearymf/AutomaticGamepad/blob/main/PlayStation/PlaystationGamepad.cs)
+
+## <b name='button_key_name'>Button Key Name</b>
+<table>
+    <tr>
+        <th colspan="2" align="center">Xbox</th>
+        <th colspan="2" align="center">PlayStation</th>
+    </tr>
+    <tr>
+        <td align="center">A Button</td>
+        <td align="center">"a"</td>
+        <td align="center">△ Button</td>
+        <td align="center">”b1“</td>
+    </tr>
+    <tr>
+        <td align="center">B Button</td>
+        <td align="center">"b"</td>
+        <td align="center">○ Button</td>
+        <td align="center">"b2"</td>
+    </tr>
+    <tr>
+        <td align="center">X Button</td>
+        <td align="center">"x"</td>
+        <td align="center">X Button</td>
+        <td align="center">"b3"</td>
+    </tr>
+    <tr>
+        <td align="center">Y Button</td>
+        <td align="center">"y"</td>
+        <td align="center">□ Button</td>
+        <td align="center">"b4"</td>
+    </tr>
+    <tr>
+        <td align="center">Left Bumper</td>
+        <td align="center">"lb"</td>
+        <td align="center">L1 Button</td>
+        <td align="center">"l1"</td>
+    </tr>
+    <tr>
+        <td align="center">Right Bumper</td>
+        <td align="center">"rb"</td>
+        <td align="center">R1 Button</td>
+        <td align="center">"r1"</td>
+    </tr>
+    <tr>
+        <td align="center">Left Stick Button</td>
+        <td align="center">"lsb"</td>
+        <td align="center">Left Stick Button</td>
+        <td align="center">"l3"</td>
+    </tr>
+    <tr>
+        <td align="center">Right Stick Button</td>
+        <td align="center">"rsb"</td>
+        <td align="center">Right Stick Button</td>
+        <td align="center">"r3"</td>
+    </tr>
+    <tr>
+        <td align="center">Menu Button</td>
+        <td align="center">"menu"</td>
+        <td align="center">Share Button</td>
+        <td align="center">"share"</td>
+    </tr>
+    <tr>
+        <td align="center">View Button</td>
+        <td align="center">"view"</td>
+        <td align="center">Option Button</td>
+        <td align="center">"option"</td>
+    </tr>
+    <tr>
+        <td align="center">XBOX Button</td>
+        <td align="center">"home"</td>
+        <td align="center">PS Button</td>
+        <td align="center">"home"</td>
+    </tr>
+    <tr>
+        <td align="center"></td>
+        <td align="center"></td>
+        <td align="center">Touchpad Button</td>
+        <td align="center">"touchpad"</td>
+    </tr>
+</table>
 
 
+## <b name="dpad_key_name">DPad Key Name</b>
+<table>
+    <tr>
+        <th colspan="2" align="center">Xbox & PlayStation</th>
+    </tr>
+    <tr>
+        <td align="center">Up key</td>
+        <td align="center">"up"</td>
+    </tr>
+    <tr>
+        <td align="center">Down key</td>
+        <td align="center">"down"</td>
+    </tr>
+    <tr>
+        <td align="center">Left Key</td>
+        <td align="center">"left"</td>
+    </tr>
+    <tr>
+        <td align="center">Right Key</td>
+        <td align="center">"right"</td>
+    </tr>
+</table>
 
-**6. 栗子说明**
+
+## <b name="trigger_key_name">Trigger Key Name</b>
+<table>
+    <tr>
+        <th colspan="2" align="center">Xbox</th>
+        <th colspan="2" align="center">PlayStation</th>
+    </tr>
+    <tr>
+        <td align="center">Left Trigger</td>
+        <td align="center">"lt"</td>
+        <td align="center">L1 Key</td>
+        <td align="center">"l1"</td>
+    </tr>
+    <tr>
+        <td align="center">Right Trigger</td>
+        <td align="center">"rt"</td>
+        <td align="center">R1 Key</td>
+        <td align="center">"r1"</td>
+    </tr>
+</table>
+
+
+## <b name="axis_key_name">Axis Key Name</b>
+<table>
+    <tr>
+        <th colspan="2" align="center">Xbox & PlayStation</th>
+    </tr>
+    <tr>
+        <td align="center">X-axis of left joystick</td>
+        <td align="center">"lsx"</td>
+    </tr>
+    <tr>
+        <td align="center">Y-axis of left joystick</td>
+        <td align="center">"lsy"</td>
+    </tr>
+    <tr>
+        <td align="center">X-axis of right joystick</td>
+        <td align="center">"rsx"</td>
+    </tr>
+    <tr>
+        <td align="center">Y-axis of left joystick</td>
+        <td align="center">"rsy"</td>
+    </tr>
+</table>
+
+## Example
 
 ```javascript
-// 下面举个栗子来说明下用法
-// 比如要在艾尔登法环的”通往王朝的崖上道路“这个地图用武器“神躯化剑”刷魂
-// 步骤是要先去到这个地图“通往王朝的崖上道路”，并双持“神躯化剑”，然后就按照上面的使用说明走一遍流程即可
+// For example (XBOX)
+// 1. Go to the ’Palace Approach Ledge Road‘ Site of Grace
+// 2. Please two-hand your equipped 'Sacred Sword Relic' weapon
+// 3. Finally, please follow the usage steps
 
-// 回城重置
+// Go to the Site of Grace
 button("view")
 button("y")
 button("a")
 button("a")
 
-// 等待加载地图时间
+// Wait for the map to finish loading
 sleep(5500)
 
-// 往左前走
+// Move to the front left
 axis2("lsx", "lsy", -0.31, 1, 5200)
 
-// 放战技
+// Cast weapons skill
 trigger("lt", 1)
 
-// 等待怪被清的差不多
+// wait for the monsters to die
 sleep(5000)
 
 ```
 
----
 
 
-
-**引用项目**
+# Reference 
 
 > [ViGEmBus](https://github.com/ViGEm/ViGEmBus)
 > [ViGEm.NET](https://github.com/tylearymf/ViGEm.NET)
