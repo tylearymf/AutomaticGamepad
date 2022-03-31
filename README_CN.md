@@ -335,7 +335,7 @@ sleep(5000)
 
 ```
 
-![example.gif](.\Images\example.gif)
+<img src=".\Images\example.gif" alt="example.gif" />
 
 # 引用项目
 
