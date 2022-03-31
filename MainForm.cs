@@ -390,7 +390,7 @@ namespace AutomaticGamepad
             Gamepad.AbortThread = false;
 
             // 将目标窗口激活
-            Gamepad.SetForeground();
+            Gamepad.SetForeground(1000);
 
             // 刷新UI
             RefreshUI();

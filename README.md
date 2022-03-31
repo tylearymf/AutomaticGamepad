@@ -107,12 +107,64 @@ void axis2(string name1, string name2, double val1, double val2, double duration
 * val2：The joystick push value, the range is [-1, 1], the lower left is -1, and the upper right is 1
 * duration：Duration of the press. The default value is 200 ms
 
-## Custom key name
+## buttonstate
+
+```c#
+// Press or release the button
+void buttonstate(string name, bool state)
+```
+
+* name：[Button Key Name](#button_key_name)
+* state:：press is true, release is false
+
+## dpadstate
+
+```c#
+// Press or release the dpad button
+void dpadstate(string name, bool state)
+```
+
+* name：[DPad Key Name](#dpad_key_name)
+* state:：press is true, release is false
+
+## triggerstate
+
+```c#
+// Press or release the trigger
+void triggerstate(string name, double val)
+```
+
+* name：[Trigger Key Name](#trigger_key_name)
+* val：Trigger press value, range is [0, 1], full press is 1
+
+## axisstate
+
+```c#
+// Push the single axis of the joystick
+void axisstate(string name, double val)
+```
+
+* name：[Axis Key Name](#axis_key_name)
+* val：The joystick push value, the range is [-1, 1], the lower left is -1, and the upper right is 1
+
+## axis2state
+
+```c#
+// Push the two axes of the joystick
+void axis2state(string name1, string name2, double val1, double val2)
+```
+
+* name1：[Axis Key Name](#axis_key_name)
+* name2：[Axis Key Name](#axis_key_name)
+* val1：The joystick push value, the range is [-1, 1], the lower left is -1, and the upper right is 1
+* val2：The joystick push value, the range is [-1, 1], the lower left is -1, and the upper right is 1
+
+# Custom key name
 
 * Xbox：[XboxGamepad.cs](https://github.com/tylearymf/AutomaticGamepad/blob/main/Xbox/XboxGamepad.cs)
 * PlayStation：[PlaystationGamepad.cs](https://github.com/tylearymf/AutomaticGamepad/blob/main/PlayStation/PlaystationGamepad.cs)
 
-## <b name='button_key_name'>Button Key Name</b>
+# <b name='button_key_name'>Button Key Name</b>
 <table>
     <tr>
         <th colspan="2" align="center">Xbox</th>
@@ -191,9 +243,7 @@ void axis2(string name1, string name2, double val1, double val2, double duration
         <td align="center">"touchpad"</td>
     </tr>
 </table>
-
-
-## <b name="dpad_key_name">DPad Key Name</b>
+# <b name="dpad_key_name">DPad Key Name</b>
 <table>
     <tr>
         <th colspan="2" align="center">Xbox & PlayStation</th>
@@ -215,9 +265,7 @@ void axis2(string name1, string name2, double val1, double val2, double duration
         <td align="center">"right"</td>
     </tr>
 </table>
-
-
-## <b name="trigger_key_name">Trigger Key Name</b>
+# <b name="trigger_key_name">Trigger Key Name</b>
 <table>
     <tr>
         <th colspan="2" align="center">Xbox</th>
@@ -236,9 +284,7 @@ void axis2(string name1, string name2, double val1, double val2, double duration
         <td align="center">"r1"</td>
     </tr>
 </table>
-
-
-## <b name="axis_key_name">Axis Key Name</b>
+# <b name="axis_key_name">Axis Key Name</b>
 <table>
     <tr>
         <th colspan="2" align="center">Xbox & PlayStation</th>
@@ -261,13 +307,13 @@ void axis2(string name1, string name2, double val1, double val2, double duration
     </tr>
 </table>
 
-## Example
+# Example
 
 ```javascript
 // For example (XBOX)
 // 1. Go to the ’Palace Approach Ledge Road‘ Site of Grace
 // 2. Please two-hand your equipped 'Sacred Sword Relic' weapon
-// 3. Finally, please follow the usage steps
+// 3. Finally, please follow the ‘Usage’ steps
 
 // Go to the Site of Grace
 button("view")
@@ -289,7 +335,7 @@ sleep(5000)
 
 ```
 
-
+![example.gif](.\Images\example.gif)
 
 # Reference 
 

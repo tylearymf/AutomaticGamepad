@@ -17,6 +17,8 @@ namespace AutomaticGamepad
         [DllImport("user32.dll")]
         protected static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        public static Gamepad Instance { private set; get; }
+
 
         public IntPtr Handle { set; get; }
         public bool AbortThread { set; get; }
@@ -32,6 +34,7 @@ namespace AutomaticGamepad
 
         public Gamepad()
         {
+            Instance = this;
             Client = new ViGEmClient();
             Console.WriteLine("Gamepad New");
         }
@@ -47,6 +50,7 @@ namespace AutomaticGamepad
 
             Client?.Dispose();
             Client = null;
+            Instance = null;
 
             Console.WriteLine("Gamepad Dispose");
         }
@@ -71,7 +75,7 @@ namespace AutomaticGamepad
         {
         }
 
-        public virtual void SetForeground(double milliseconds = 1000)
+        public virtual void SetForeground(double milliseconds)
         {
             if (Handle != IntPtr.Zero)
             {
@@ -83,11 +87,18 @@ namespace AutomaticGamepad
         #region JS Interface
 
         public void sleep(double milliseconds) { SetSleep(milliseconds); }
+
         public void button(string name, double duration = 200) { SetButton(name, duration); }
         public void dpad(string name, double duration = 200) { SetDPad(name, duration); }
         public void trigger(string name, double value, double duration = 200) { SetTrigger(name, value, duration); }
         public void axis(string name, double value, double duration = 200) { SetAxis(name, value, duration); }
         public void axis2(string name1, string name2, double value1, double value2, double duration = 200) { SetAxis2(name1, name2, value1, value2, duration); }
+
+        public void buttonstate(string name, bool state) { SetButtonState(name, state); }
+        public void dpadstate(string name, bool state) { SetDPadState(name, state); }
+        public void triggerstate(string name, double value) { SetTriggerState(name, value); }
+        public void axisstate(string name, double value) { SetAxisState(name, value); }
+        public void axis2state(string name1, string name2, double value1, double value2) { SetAxis2State(name1, name2, value1, value2); }
 
         #endregion
 
@@ -104,39 +115,7 @@ namespace AutomaticGamepad
             }
         }
 
-        public virtual void SetButton(string name, double duration = 200)
-        {
-            if (GamepadPropertyDic.TryGetValue(name, out var property) && property is GamepadButton button)
-                SetButton(button, duration);
-        }
-
-        public virtual void SetDPad(string name, double duration = 200)
-        {
-            if (GamepadPropertyDic.TryGetValue(name, out var property) && property is GamepadDPad dpad)
-                SetDPad(dpad, duration);
-        }
-
-        public virtual void SetTrigger(string name, double value, double duration = 200)
-        {
-            if (GamepadPropertyDic.TryGetValue(name, out var property) && property is GamepadTrigger slider)
-                SetTrigger(slider, value, duration);
-        }
-
-        public virtual void SetAxis(string name, double value, double duration = 200)
-        {
-            if (GamepadPropertyDic.TryGetValue(name, out var property) && property is GamepadAxis axis)
-                SetAxis(axis, value, duration);
-        }
-
-        public virtual void SetAxis2(string name1, string name2, double value1, double value2, double duration = 200)
-        {
-            var result1 = GamepadPropertyDic.TryGetValue(name1, out var property1);
-            var result2 = GamepadPropertyDic.TryGetValue(name2, out var property2);
-            if (result1 && result2 && property1 is GamepadAxis axis1 && property2 is GamepadAxis axis2)
-                SetAxis2(axis1, axis2, value1, value2, duration);
-        }
-
-        public void CallMethod(params string[] args)
+        public virtual void CallMethod(params string[] args)
         {
             SetForeground(200);
 
@@ -176,53 +155,46 @@ namespace AutomaticGamepad
             }
         }
 
+        public T GetProperty<T>(string name) where T : GamepadProperty
+        {
+            GamepadPropertyDic.TryGetValue(name, out var property);
+            return property as T;
+        }
+
         protected void SetButton(GamepadButton button, double duration = 200, bool enabledDelay = true)
         {
-            var gamepad = Internal_Gamepad;
-            gamepad.AutoSubmitReport = true;
+            if (button == null)
+                return;
 
-            gamepad.SetButtonState(button, true);
+            SetButtonState(button, true);
             SetSleep(duration);
-            gamepad.SetButtonState(button, false);
+            SetButtonState(button, false);
 
             if (enabledDelay)
                 SetSleep(200);
         }
 
-        protected void SetDPad(GamepadDPad button, double duration = 200, bool enabledDelay = true)
+        protected void SetDPad(GamepadDPad dPad, double duration = 200, bool enabledDelay = true)
         {
-            var gamepad = Internal_Gamepad;
-            gamepad.AutoSubmitReport = true;
+            if (dPad == null)
+                return;
 
-            if (gamepad is IDualShock4Controller controller)
-            {
-                controller.SetDPadDirection((DualShock4DPadDirection)button.DualShock4);
-                SetSleep(duration);
-                controller.SetDPadDirection(DualShock4DPadDirection.None);
+            SetDPadState(dPad, true);
+            SetSleep(duration);
+            SetDPadState(dPad, false);
 
-                if (enabledDelay)
-                    SetSleep(200);
-            }
-            else
-            {
-                gamepad.SetButtonState(button, true);
-                SetSleep(duration);
-                gamepad.SetButtonState(button, false);
-
-                if (enabledDelay)
-                    SetSleep(200);
-            }
+            if (enabledDelay)
+                SetSleep(200);
         }
 
-        protected void SetTrigger(GamepadTrigger slider, double value, double duration = 200, bool enabledDelay = true)
+        protected void SetTrigger(GamepadTrigger trigger, double value, double duration = 200, bool enabledDelay = true)
         {
-            var byteValue = ToByte(value);
-            var gamepad = Internal_Gamepad;
-            gamepad.AutoSubmitReport = true;
+            if (trigger == null)
+                return;
 
-            gamepad.SetSliderValue(slider, byteValue);
+            SetTriggerState(trigger, value);
             SetSleep(duration);
-            gamepad.SetSliderValue(slider, 0);
+            SetTriggerState(trigger, 0);
 
             if (enabledDelay)
                 SetSleep(200);
@@ -230,13 +202,12 @@ namespace AutomaticGamepad
 
         protected void SetAxis(GamepadAxis axis, double value, double duration = 200, bool enabledDelay = true)
         {
-            var shortValue = ToShort(value);
-            var gamepad = Internal_Gamepad;
-            gamepad.AutoSubmitReport = true;
+            if (axis == null)
+                return;
 
-            gamepad.SetAxisValue(axis, shortValue);
+            SetAxisState(axis, value);
             SetSleep(duration);
-            gamepad.SetAxisValue(axis, 0);
+            SetAxisState(axis, 0);
 
             if (enabledDelay)
                 SetSleep(200);
@@ -244,22 +215,65 @@ namespace AutomaticGamepad
 
         protected void SetAxis2(GamepadAxis axis1, GamepadAxis axis2, double value1, double value2, double duration = 200, bool enabledDelay = true)
         {
-            var shortValue1 = ToShort(value1);
-            var shortValue2 = ToShort(value2);
+            if (axis1 == null || axis2 == null)
+                return;
 
-            var gamepad = Internal_Gamepad;
-            gamepad.AutoSubmitReport = false;
-
-            gamepad.SetAxisValue(axis1, shortValue1);
-            gamepad.SetAxisValue(axis2, shortValue2);
-            gamepad.SubmitReport();
+            SetAxis2State(axis1, axis2, value1, value2);
             SetSleep(duration);
-            gamepad.SetAxisValue(axis1, 0);
-            gamepad.SetAxisValue(axis2, 0);
-            gamepad.SubmitReport();
+            SetAxis2State(axis1, axis2, 0, 0);
 
             if (enabledDelay)
                 SetSleep(200);
+        }
+
+        protected void SetButtonState(GamepadButton button, bool state)
+        {
+            var gamepad = Internal_Gamepad;
+            gamepad.AutoSubmitReport = true;
+            gamepad.SetButtonState(button, state);
+        }
+
+        protected void SetDPadState(GamepadDPad dPad, bool state)
+        {
+            var gamepad = Internal_Gamepad;
+            gamepad.AutoSubmitReport = true;
+
+            if (gamepad is IDualShock4Controller controller)
+            {
+                if (state)
+                    controller.SetDPadDirection((DualShock4DPadDirection)dPad.DualShock4);
+                else
+                    controller.SetDPadDirection(DualShock4DPadDirection.None);
+            }
+            else
+            {
+                gamepad.SetButtonState(dPad, state);
+            }
+        }
+
+        protected void SetTriggerState(GamepadTrigger trigger, double value)
+        {
+            var gamepad = Internal_Gamepad;
+            gamepad.AutoSubmitReport = true;
+            gamepad.SetSliderValue(trigger, ToByte(value));
+        }
+
+        protected void SetAxisState(GamepadAxis axis, double value)
+        {
+            var gamepad = Internal_Gamepad;
+            gamepad.AutoSubmitReport = true;
+            gamepad.SetAxisValue(axis, ToShort(value));
+        }
+
+        protected void SetAxis2State(GamepadAxis axis1, GamepadAxis axis2, double value1, double value2)
+        {
+            var gamepad = Internal_Gamepad;
+            gamepad.AutoSubmitReport = false;
+
+            gamepad.SetAxisValue(axis1, ToShort(value1));
+            gamepad.SetAxisValue(axis2, ToShort(value2));
+
+            gamepad.SubmitReport();
         }
 
         protected byte ToByte(double value)
@@ -314,6 +328,11 @@ namespace AutomaticGamepad
         {
             return new GamepadButton() { DualShock4 = button };
         }
+
+        public static implicit operator GamepadButton(string name)
+        {
+            return Gamepad.Instance.GetProperty<GamepadButton>(name);
+        }
     }
 
     public class GamepadDPad : GamepadProperty
@@ -326,6 +345,11 @@ namespace AutomaticGamepad
         public static implicit operator GamepadDPad(DualShock4DPadDirection button)
         {
             return new GamepadDPad() { DualShock4 = button };
+        }
+
+        public static implicit operator GamepadDPad(string name)
+        {
+            return Gamepad.Instance.GetProperty<GamepadDPad>(name);
         }
     }
 
@@ -340,6 +364,11 @@ namespace AutomaticGamepad
         {
             return new GamepadTrigger() { DualShock4 = slider };
         }
+
+        public static implicit operator GamepadTrigger(string name)
+        {
+            return Gamepad.Instance.GetProperty<GamepadTrigger>(name);
+        }
     }
 
     public class GamepadAxis : GamepadProperty
@@ -352,6 +381,11 @@ namespace AutomaticGamepad
         public static implicit operator GamepadAxis(DualShock4Axis button)
         {
             return new GamepadAxis() { DualShock4 = button };
+        }
+
+        public static implicit operator GamepadAxis(string name)
+        {
+            return Gamepad.Instance.GetProperty<GamepadAxis>(name);
         }
     }
 }

@@ -106,12 +106,64 @@ void axis2(string name1, string name2, double val1, double val2, double duration
 * val2：摇杆推动值，范围为[-1, 1]，左下为-1，右上为1
 * duration：按下的持续时长，默认值200毫秒（毫秒）
 
-## 键位名自定义
+## buttonstate
+
+```c#
+// 按下按钮
+void buttonstate(string name, bool state)
+```
+
+* name：[按钮键位名](#button_key_name)
+* state：按下是 true，松开是 false
+
+## dpadstate
+
+```c#
+// 按下 dpad 按钮
+void dpadstate(string name, bool state)
+```
+
+* name：[DPad键位名](#dpad_key_name)
+* state：按下是 true，松开是 false
+
+## triggerstate
+
+```c#
+// 按下 触发器
+void triggerstate(string name, double val)
+```
+
+* name：[触发器键位名](#trigger_key_name)
+* val：触发器按压值，范围为[0, 1]，完全按压下去为1
+
+## axisstate
+
+```c#
+// 推动摇杆的一个轴
+void axisstate(string name, double val)
+```
+
+* name：[摇杆键位名](#axis_key_name)
+* val：摇杆推动值，范围为[-1, 1]，左下为-1，右上为1
+
+## axis2state
+
+```c#
+// 推动摇杆的两个轴
+void axis2state(string name1, string name2, double val1, double val2)
+```
+
+* name1：[摇杆键位名](#axis_key_name)
+* name2：[摇杆键位名](#axis_key_name)
+* val1：摇杆推动值，范围为[-1, 1]，左下为-1，右上为1
+* val2：摇杆推动值，范围为[-1, 1]，左下为-1，右上为1
+
+# 键位名自定义
 
 * Xbox：[XboxGamepad.cs](https://github.com/tylearymf/AutomaticGamepad/blob/main/Xbox/XboxGamepad.cs)
 * PlayStation：[PlaystationGamepad.cs](https://github.com/tylearymf/AutomaticGamepad/blob/main/PlayStation/PlaystationGamepad.cs)
 
-## <b name='button_key_name'>按钮键位名</b>
+# <b name='button_key_name'>按钮键位名</b>
 <table>
     <tr>
         <th colspan="2" align="center">Xbox</th>
@@ -191,7 +243,7 @@ void axis2(string name1, string name2, double val1, double val2, double duration
     </tr>
 </table>
 
-## <b name="dpad_key_name">DPad键位名</b>
+# <b name="dpad_key_name">DPad键位名</b>
 <table>
     <tr>
         <th colspan="2" align="center">Xbox & PlayStation</th>
@@ -214,7 +266,7 @@ void axis2(string name1, string name2, double val1, double val2, double duration
     </tr>
 </table>
 
-## <b name="trigger_key_name">触发器键位名</b>
+# <b name="trigger_key_name">触发器键位名</b>
 <table>
     <tr>
         <th colspan="2" align="center">Xbox</th>
@@ -234,7 +286,7 @@ void axis2(string name1, string name2, double val1, double val2, double duration
     </tr>
 </table>
 
-## <b name="axis_key_name">摇杆键位名</b>
+# <b name="axis_key_name">摇杆键位名</b>
 <table>
     <tr>
         <th colspan="2" align="center">Xbox & PlayStation</th>
@@ -257,7 +309,7 @@ void axis2(string name1, string name2, double val1, double val2, double duration
     </tr>
 </table>
 
-## 例子说明
+# 例子说明
 
 ```javascript
 // 比如要在艾尔登法环的”通往王朝的崖上道路“这个地图用武器“神躯化剑”刷魂
@@ -283,7 +335,7 @@ sleep(5000)
 
 ```
 
-
+![example.gif](.\Images\example.gif)
 
 # 引用项目
 
