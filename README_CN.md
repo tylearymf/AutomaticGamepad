@@ -6,9 +6,9 @@
 
 * 为主机游戏编写自动化脚本
 
-| 支持设备:video_game:    |     Xbox One X     |   Xbox Series X    | PlayStation 4 | PlayStation 5 |
-| ----------------------- | :----------------: | :----------------: | :-----------: | :-----------: |
-| 测试情况:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   |  :question:   |
+| 支持设备:video_game:    |     Xbox One X     |   Xbox Series X    | PlayStation 4 |   PlayStation 5    |
+| ----------------------- | :----------------: | :----------------: | :-----------: | :----------------: |
+| 测试情况:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   | :white_check_mark: |
 
 # 前置条件
 

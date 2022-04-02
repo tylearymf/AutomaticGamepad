@@ -6,9 +6,9 @@
 
 * Write automated scripts for console games
 
-| Supported Devices:video_game:  |     Xbox One X     |   Xbox Series X    | PlayStation 4 | PlayStation 5 |
-| ------------------------------ | :----------------: | :----------------: | :-----------: | :-----------: |
-| **Test Result**:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   |  :question:   |
+| Supported Devices:video_game:  |     Xbox One X     |   Xbox Series X    | PlayStation 4 |   PlayStation 5    |
+| ------------------------------ | :----------------: | :----------------: | :-----------: | :----------------: |
+| **Test Result**:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   | :white_check_mark: |
 
 ## Prerequisites
 

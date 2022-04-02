@@ -262,6 +262,8 @@ namespace AutomaticGamepad
         {
             var gamepad = Internal_Gamepad;
             gamepad.AutoSubmitReport = true;
+
+            value = FixedAxisValue(axis, value);
             gamepad.SetAxisValue(axis, ToShort(value));
         }
 
@@ -270,6 +272,8 @@ namespace AutomaticGamepad
             var gamepad = Internal_Gamepad;
             gamepad.AutoSubmitReport = false;
 
+            value1 = FixedAxisValue(axis1, value1);
+            value2 = FixedAxisValue(axis2, value2);
             gamepad.SetAxisValue(axis1, ToShort(value1));
             gamepad.SetAxisValue(axis2, ToShort(value2));
 
@@ -284,6 +288,15 @@ namespace AutomaticGamepad
         protected short ToShort(double value)
         {
             return (short)(value * short.MaxValue);
+        }
+
+        protected double FixedAxisValue(GamepadAxis axis, double value)
+        {
+            if (axis?.DualShock4 == DualShock4Axis.LeftThumbY ||
+                axis?.DualShock4 == DualShock4Axis.RightThumbY)
+                return value * -1;
+
+            return value;
         }
     }
 
