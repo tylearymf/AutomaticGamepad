@@ -13,6 +13,7 @@ namespace AutomaticGamepad
     public abstract class Gamepad : IDisposable
     {
         public const string Name = "gamepad";
+        public const int Duration = 200;
 
         [DllImport("user32.dll")]
         protected static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -22,6 +23,7 @@ namespace AutomaticGamepad
 
         public IntPtr Handle { set; get; }
         public bool AbortThread { set; get; }
+        public int DelayTime { set; get; } = 100;
 
         public abstract GamepadType GamepadType { get; }
         public abstract string BindApplicationName { get; }
@@ -87,12 +89,13 @@ namespace AutomaticGamepad
         #region JS Interface
 
         public void sleep(double milliseconds) { SetSleep(milliseconds); }
+        public void setdelay(double delay) { DelayTime = (int)delay; }
 
-        public void button(string name, double duration = 200) { SetButton(name, duration); }
-        public void dpad(string name, double duration = 200) { SetDPad(name, duration); }
-        public void trigger(string name, double value, double duration = 200) { SetTrigger(name, value, duration); }
-        public void axis(string name, double value, double duration = 200) { SetAxis(name, value, duration); }
-        public void axis2(string name1, string name2, double value1, double value2, double duration = 200) { SetAxis2(name1, name2, value1, value2, duration); }
+        public void button(string name, double duration = Duration) { SetButton(name, duration); }
+        public void dpad(string name, double duration = Duration) { SetDPad(name, duration); }
+        public void trigger(string name, double value, double duration = Duration) { SetTrigger(name, value, duration); }
+        public void axis(string name, double value, double duration = Duration) { SetAxis(name, value, duration); }
+        public void axis2(string name1, string name2, double value1, double value2, double duration = Duration) { SetAxis2(name1, name2, value1, value2, duration); }
 
         public void buttonstate(string name, bool state) { SetButtonState(name, state); }
         public void dpadstate(string name, bool state) { SetDPadState(name, state); }
@@ -140,9 +143,9 @@ namespace AutomaticGamepad
             {
                 case 1:
                     if (property is GamepadButton button)
-                        SetButton(button, enabledDelay: enabledDelay);
+                        SetButton(button, Duration, enabledDelay);
                     else if (property is GamepadDPad dPad)
-                        SetDPad(dPad, enabledDelay: enabledDelay);
+                        SetDPad(dPad, Duration, enabledDelay);
                     break;
                 case 3:
                     if (property is GamepadTrigger slider)
@@ -161,7 +164,7 @@ namespace AutomaticGamepad
             return property as T;
         }
 
-        protected void SetButton(GamepadButton button, double duration = 200, bool enabledDelay = true)
+        protected void SetButton(GamepadButton button, double duration, bool enabledDelay = true)
         {
             if (button == null)
                 return;
@@ -171,10 +174,10 @@ namespace AutomaticGamepad
             SetButtonState(button, false);
 
             if (enabledDelay)
-                SetSleep(200);
+                SetSleep(DelayTime);
         }
 
-        protected void SetDPad(GamepadDPad dPad, double duration = 200, bool enabledDelay = true)
+        protected void SetDPad(GamepadDPad dPad, double duration, bool enabledDelay = true)
         {
             if (dPad == null)
                 return;
@@ -184,10 +187,10 @@ namespace AutomaticGamepad
             SetDPadState(dPad, false);
 
             if (enabledDelay)
-                SetSleep(200);
+                SetSleep(DelayTime);
         }
 
-        protected void SetTrigger(GamepadTrigger trigger, double value, double duration = 200, bool enabledDelay = true)
+        protected void SetTrigger(GamepadTrigger trigger, double value, double duration, bool enabledDelay = true)
         {
             if (trigger == null)
                 return;
@@ -197,10 +200,10 @@ namespace AutomaticGamepad
             SetTriggerState(trigger, 0);
 
             if (enabledDelay)
-                SetSleep(200);
+                SetSleep(DelayTime);
         }
 
-        protected void SetAxis(GamepadAxis axis, double value, double duration = 200, bool enabledDelay = true)
+        protected void SetAxis(GamepadAxis axis, double value, double duration, bool enabledDelay = true)
         {
             if (axis == null)
                 return;
@@ -210,10 +213,10 @@ namespace AutomaticGamepad
             SetAxisState(axis, 0);
 
             if (enabledDelay)
-                SetSleep(200);
+                SetSleep(DelayTime);
         }
 
-        protected void SetAxis2(GamepadAxis axis1, GamepadAxis axis2, double value1, double value2, double duration = 200, bool enabledDelay = true)
+        protected void SetAxis2(GamepadAxis axis1, GamepadAxis axis2, double value1, double value2, double duration, bool enabledDelay = true)
         {
             if (axis1 == null || axis2 == null)
                 return;
@@ -223,7 +226,7 @@ namespace AutomaticGamepad
             SetAxis2State(axis1, axis2, 0, 0);
 
             if (enabledDelay)
-                SetSleep(200);
+                SetSleep(DelayTime);
         }
 
         protected void SetButtonState(GamepadButton button, bool state)
@@ -262,6 +265,8 @@ namespace AutomaticGamepad
         {
             var gamepad = Internal_Gamepad;
             gamepad.AutoSubmitReport = true;
+
+            value = FixedAxisValue(axis, value);
             gamepad.SetAxisValue(axis, ToShort(value));
         }
 
@@ -270,6 +275,8 @@ namespace AutomaticGamepad
             var gamepad = Internal_Gamepad;
             gamepad.AutoSubmitReport = false;
 
+            value1 = FixedAxisValue(axis1, value1);
+            value2 = FixedAxisValue(axis2, value2);
             gamepad.SetAxisValue(axis1, ToShort(value1));
             gamepad.SetAxisValue(axis2, ToShort(value2));
 
@@ -284,6 +291,15 @@ namespace AutomaticGamepad
         protected short ToShort(double value)
         {
             return (short)(value * short.MaxValue);
+        }
+
+        protected double FixedAxisValue(GamepadAxis axis, double value)
+        {
+            if (axis?.DualShock4 == DualShock4Axis.LeftThumbY ||
+                axis?.DualShock4 == DualShock4Axis.RightThumbY)
+                return value * -1;
+
+            return value;
         }
     }
 

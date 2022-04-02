@@ -6,9 +6,9 @@
 
 * Write automated scripts for console games
 
-| Supported Devices:video_game:  |     Xbox One X     |   Xbox Series X    | PlayStation 4 | PlayStation 5 |
-| ------------------------------ | :----------------: | :----------------: | :-----------: | :-----------: |
-| **Test Result**:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   |  :question:   |
+| Supported Devices:video_game:  |     Xbox One X     |   Xbox Series X    | PlayStation 4 |   PlayStation 5    |
+| ------------------------------ | :----------------: | :----------------: | :-----------: | :----------------: |
+| **Test Result**:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   | :white_check_mark: |
 
 ## Prerequisites
 
@@ -46,7 +46,16 @@
 void sleep(double milliseconds)
 ```
 
-* milliseconds: sleep time
+* milliseconds：sleep time
+
+## setdelay
+
+```c#
+// The delay after a method is called. For example, call button(), dpad()
+void setdelay(double delay)
+```
+
+* delay：delay time（milliseconds）
 
 ## button
 

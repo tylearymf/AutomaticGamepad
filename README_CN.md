@@ -6,9 +6,9 @@
 
 * 为主机游戏编写自动化脚本
 
-| 支持设备:video_game:    |     Xbox One X     |   Xbox Series X    | PlayStation 4 | PlayStation 5 |
-| ----------------------- | :----------------: | :----------------: | :-----------: | :-----------: |
-| 测试情况:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   |  :question:   |
+| 支持设备:video_game:    |     Xbox One X     |   Xbox Series X    | PlayStation 4 |   PlayStation 5    |
+| ----------------------- | :----------------: | :----------------: | :-----------: | :----------------: |
+| 测试情况:arrow_forward: | :white_check_mark: | :white_check_mark: |  :question:   | :white_check_mark: |
 
 # 前置条件
 
@@ -46,6 +46,15 @@ void sleep(double milliseconds)
 ```
 
 * milliseconds: 休眠时长（毫秒）
+
+## setdelay
+
+```c#
+// 设置调用方法后的延迟时间，调用方法有：button()、dpad()等等
+void setdelay(double delay)
+```
+
+* delay：延迟时间（毫秒）
 
 ## button
 

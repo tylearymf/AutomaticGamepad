@@ -77,10 +77,10 @@ namespace AutomaticGamepad
                 { Button_View, (GamepadButton)Xbox360Button.Back },
                 { Button_Home, (GamepadButton)Xbox360Button.Guide },
 
-                { DPad_UP, (GamepadButton)Xbox360Button.Up },
-                { DPad_DOWN, (GamepadButton)Xbox360Button.Down },
-                { DPad_LEFT, (GamepadButton)Xbox360Button.Left },
-                { DPad_RIGHT, (GamepadButton)Xbox360Button.Right },
+                { DPad_UP, (GamepadDPad)Xbox360Button.Up },
+                { DPad_DOWN, (GamepadDPad)Xbox360Button.Down },
+                { DPad_LEFT, (GamepadDPad)Xbox360Button.Left },
+                { DPad_RIGHT, (GamepadDPad)Xbox360Button.Right },
 
                 { Trigger_LT, (GamepadTrigger)Xbox360Slider.LeftTrigger },
                 { Trigger_RT, (GamepadTrigger)Xbox360Slider.RightTrigger },
