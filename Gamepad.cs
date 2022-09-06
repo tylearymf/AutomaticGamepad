@@ -257,8 +257,16 @@ namespace AutomaticGamepad
         protected void SetTriggerState(GamepadTrigger trigger, double value)
         {
             var gamepad = Internal_Gamepad;
-            gamepad.AutoSubmitReport = true;
+            gamepad.AutoSubmitReport = false;
+
+            // PS4下需要调用 SetButtonState 才会生效
+            if (trigger.DualShock4 == DualShock4Slider.LeftTrigger)
+                gamepad.SetButtonState(DualShock4Button.TriggerLeft.Id, value > 0);
+            else if (trigger.DualShock4 == DualShock4Slider.RightTrigger)
+                gamepad.SetButtonState(DualShock4Button.TriggerRight.Id, value > 0);
+
             gamepad.SetSliderValue(trigger, ToByte(value));
+            gamepad.SubmitReport();
         }
 
         protected void SetAxisState(GamepadAxis axis, double value)
