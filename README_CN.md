@@ -284,14 +284,14 @@ void axis2state(string name1, string name2, double val1, double val2)
     <tr>
         <td align="center">LT键</td>
         <td align="center">"lt"</td>
-        <td align="center">L1键</td>
-        <td align="center">"l1"</td>
+        <td align="center">L2键</td>
+        <td align="center">"l2"</td>
     </tr>
     <tr>
         <td align="center">RT键</td>
         <td align="center">"rt"</td>
-        <td align="center">R1键</td>
-        <td align="center">"r1"</td>
+        <td align="center">R2键</td>
+        <td align="center">"r2"</td>
     </tr>
 </table>
 
